@@ -99,7 +99,7 @@ my_fit |>
   gt()
 ```
 
-The adjusted r.squared is `r my_fit %>% glance() %>% pull(r.squared)`
+The r.squared is `r my_fit %>% glance() %>% pull(r.squared)`
 
 ## Visualization
 

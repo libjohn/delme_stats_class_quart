@@ -118,6 +118,8 @@ starwars %>%
 
 ## columns
 
+<!--# I dont' know if I want columns of equal width -->
+
 ::: columns
 ::: {.column width="50%"}
 ```{r}
@@ -140,11 +142,13 @@ starwars %>%
 
 starwars %>% 
   filter(mass < 500) %>% 
-  select(name, mass, height, gender) %>% 
+  # select(name, mass, height, gender) %>% 
   ggplot(aes(height, mass)) +
   geom_smooth(method = lm, se = FALSE)
 ```
 :::
 :::
+
+<!--# what what -->
 
 ## Reference

@@ -42,7 +42,7 @@ library(gt)
 
 ## Import and wrangle data
 
-In my starwars dataset. I through out Jabba the Hut.
+In my starwars dataset, I threw out Jabba the Hut.
 
 ```{r}
 my_starwars_df <- dplyr::starwars |> 

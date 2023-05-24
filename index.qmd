@@ -1,0 +1,150 @@
+---
+title: "my test workflow"
+author: "John Little"
+date: today
+format: 
+  revealjs:
+    embed-resources: true
+    footer: "CC BY 4.0 John R Little"
+    output-file: slides
+  html: 
+    output-file: draft
+bibliography: references.bib
+---
+
+## Executive Summary
+
+Starwars[^1] datasets can be analyzed, modeled, and visualized. Using Tidyverse @wickham2019 principles I will create a reproducible project that uses code to orchestrate my research workflow. Research artifacts (slides, websites, documents) will be derived from code because a primary principle of reproducibility is to do everything with code. Quarto scientific publishing tools and techniques will be employed. Using tidyverse principles I will wangle my data from and into data frames.
+
+[^1]: The Starwars series was created by George Lucas. The data comes from the {dplyr} package, part of the Tidyverse
+
+## Reproducibility
+
+-   Use a *Quarto Document* to draft your methodology, modeling, and visualizations
+
+-   The last thing you should do is create the publication artifacts: slides, dashboards, websites. In other words, first, draft workflows in a Quarto Document. Last format reports
+
+-   Use git version control
+
+-   Use github for profiling your git repositories and facilitating group collaboration.
+
+## Load library packages
+
+```{r}
+#| echo: true
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(broom)
+library(gt)
+```
+
+## Import and wrangle data
+
+In my starwars dataset. I through out Jabba the Hut.
+
+```{r}
+my_starwars_df <- dplyr::starwars |> 
+  filter(mass < 500) |>   # Throw out Jabba
+  select(name, mass, height, gender)
+my_starwars_df
+```
+
+## Display my dataset as a pretty great table
+
+Showing here only the first ten observations
+
+```{r}
+my_starwars_df |> 
+  slice_head(n = 10) |> 
+  gt()
+```
+
+## Model
+
+```{r}
+#| label: my_model
+
+my_fit <- lm(mass ~ height, data = my_starwars_df)
+# my_fit <- lm(mass ~ height, data = starwars |> filter(mass < 500))
+
+my_fit
+
+summary(my_fit)
+
+```
+
+## broom - tidy
+
+```{r}
+my_fit |> 
+  tidy() |> 
+  gt()
+
+my_pvalue <- my_fit |> 
+  tidy() |> 
+  filter(term == "height") |> 
+  pull(p.value)
+
+```
+
+The p-value of my model is `r my_pvalue`
+
+## broom - glance
+
+```{r}
+my_fit |> 
+  glance() |> 
+  gt()
+```
+
+The adjusted r.squared is `r my_fit %>% glance() %>% pull(r.squared)`
+
+## Visualization
+
+```{r}
+#| message: false
+#| warning: false
+#| output-location: column
+
+starwars %>% 
+  filter(mass < 500) %>% 
+  select(name, mass, height, gender) %>% 
+  ggplot(aes(height, mass)) +
+  geom_point(aes(color = gender)) +
+  geom_smooth(method = lm, se = FALSE)
+```
+
+## columns
+
+::: columns
+::: {.column width="50%"}
+```{r}
+#| message: false
+#| warning: false
+
+starwars %>% 
+  filter(mass < 500) %>% 
+  select(name, mass, height, gender) %>% 
+  ggplot(aes(height, mass)) +
+  geom_point(aes(color = gender)) +
+  geom_smooth(method = lm, se = FALSE)
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+#| message: false
+#| warning: false
+
+starwars %>% 
+  filter(mass < 500) %>% 
+  select(name, mass, height, gender) %>% 
+  ggplot(aes(height, mass)) +
+  geom_smooth(method = lm, se = FALSE)
+```
+:::
+:::
+
+## Reference
